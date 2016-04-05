@@ -3,23 +3,13 @@ require(methods)
 require(reshape2)
 
 featureclass = rep('numeric', length(classnames))
-#colclasstrain = c('integer', featureclass, 'character')
-#colclasstest = c('integer', featureclass)
 
-train = read.csv('train_cleaned.csv', header=T)#, colClasses=colclasstrain)
-test = read.csv('test_cleaned.csv', header=T)#, colClasses = colclasstest)
-
-
-#id = test[,1]
-
-#train = train[,-1]
-#test = test[,-1]
+train = read.csv('train_cleaned.csv', header=T)
+test = read.csv('test_cleaned.csv', header=T)
 
 target = length(colnames(train))-1
 classnames = unique(target)
 target = as.integer(classnames)
-
-#train = train[,-ncol(train)]
 
 trainMatrix <- data.matrix(train)
 testMatrix <- data.matrix(test)
@@ -39,9 +29,9 @@ bst = xgboost(data = trainMatrix, label = target, params = param, nrounds = nrou
 
 
 ypred = predict(bst, testMatrix)
-
 predMatrix <- data.frame(matrix(ypred, ncol=numberOfClasses, byrow=TRUE))
 colnames(predMatrix) = classnames
+
 res <- data.frame(id, predMatrix)
 write.csv(res, 'submissionR.csv', quote=F, row.names=F)
 
