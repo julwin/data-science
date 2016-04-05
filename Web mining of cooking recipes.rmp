@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process version="7.0.001">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="7.0.001" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="false" class="retrieve" compatibility="7.0.001" expanded="true" height="68" name="Retrieve cookbooks" width="90" x="45" y="85">
+        <parameter key="repository_entry" value="//Local Repository/temp/cookbooks"/>
+      </operator>
+      <operator activated="false" class="remove_duplicates" compatibility="7.0.001" expanded="true" height="82" name="Remove Duplicates" width="90" x="179" y="85">
+        <parameter key="attribute_filter_type" value="all"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="treat_missing_values_as_duplicates" value="false"/>
+      </operator>
+      <operator activated="false" class="filter_example_range" compatibility="7.0.001" expanded="true" height="82" name="Filter Example Range" width="90" x="313" y="85">
+        <parameter key="first_example" value="1"/>
+        <parameter key="last_example" value="10"/>
+        <parameter key="invert_filter" value="false"/>
+      </operator>
+      <operator activated="false" class="web:retrieve_webpages" compatibility="7.0.000" expanded="true" height="68" name="Get Pages" width="90" x="447" y="85">
+        <parameter key="link_attribute" value="title.href"/>
+        <parameter key="random_user_agent" value="false"/>
+        <parameter key="connection_timeout" value="10000"/>
+        <parameter key="read_timeout" value="10000"/>
+        <parameter key="follow_redirects" value="false"/>
+        <parameter key="accept_cookies" value="none"/>
+        <parameter key="cookie_scope" value="global"/>
+        <parameter key="request_method" value="POST"/>
+        <parameter key="delay" value="none"/>
+        <parameter key="delay_amount" value="1000"/>
+        <parameter key="min_delay_amount" value="0"/>
+        <parameter key="max_delay_amount" value="1000"/>
+      </operator>
+      <operator activated="false" class="store" compatibility="7.0.001" expanded="true" height="68" name="Store" width="90" x="581" y="85">
+        <parameter key="repository_entry" value="//Local Repository/temp/pages"/>
+      </operator>
+      <operator activated="true" class="retrieve" compatibility="7.0.001" expanded="true" height="68" name="Retrieve" width="90" x="45" y="187">
+        <parameter key="repository_entry" value="//Local Repository/temp/pages"/>
+      </operator>
+      <operator activated="true" breakpoints="after" class="filter_examples" compatibility="7.0.001" expanded="true" height="103" name="Filter Examples" width="90" x="179" y="187">
+        <parameter key="parameter_expression" value=""/>
+        <parameter key="condition_class" value="custom_filters"/>
+        <parameter key="invert_filter" value="false"/>
+        <list key="filters_list">
+          <parameter key="filters_entry_key" value="title\.href.contains.dinersjournal"/>
+        </list>
+        <parameter key="filters_logic_and" value="true"/>
+        <parameter key="filters_check_metadata" value="true"/>
+      </operator>
+      <operator activated="true" class="text:data_to_documents" compatibility="7.0.000" expanded="true" height="68" name="Data to Documents (2)" width="90" x="313" y="289">
+        <parameter key="select_attributes_and_weights" value="false"/>
+        <list key="specify_weights"/>
+      </operator>
+      <operator activated="true" class="text:process_documents" compatibility="7.0.000" expanded="true" height="103" name="Process Documents (2)" width="90" x="514" y="340">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="true"/>
+        <parameter key="prune_method" value="by ranking"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.05"/>
+        <parameter key="prune_above_rank" value="0.95"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <process expanded="true">
+          <operator activated="true" class="web:extract_html_text_content" compatibility="7.0.000" expanded="true" height="68" name="Extract Content (2)" width="90" x="45" y="34">
+            <parameter key="extract_content" value="true"/>
+            <parameter key="minimum_text_block_length" value="1"/>
+            <parameter key="override_content_type_information" value="true"/>
+            <parameter key="neglegt_span_tags" value="true"/>
+            <parameter key="neglect_p_tags" value="true"/>
+            <parameter key="neglect_b_tags" value="true"/>
+            <parameter key="neglect_i_tags" value="true"/>
+            <parameter key="neglect_br_tags" value="true"/>
+            <parameter key="ignore_non_html_tags" value="true"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="7.0.001" expanded="true" height="82" name="Multiply (2)" width="90" x="179" y="34"/>
+          <operator activated="true" class="text:filter_tokens_by_regions" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (3)" width="90" x="313" y="34">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="Time"/>
+            <parameter key="case_sensitive" value="true"/>
+            <parameter key="invert condition" value="false"/>
+            <parameter key="tokens_before" value="0"/>
+            <parameter key="tokens_after" value="25"/>
+          </operator>
+          <operator activated="true" class="text:filter_tokens_by_regions" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (4)" width="90" x="447" y="34">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="1."/>
+            <parameter key="case_sensitive" value="true"/>
+            <parameter key="invert condition" value="false"/>
+            <parameter key="tokens_before" value="25"/>
+            <parameter key="tokens_after" value="0"/>
+          </operator>
+          <operator activated="true" class="text:filter_by_length" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (by Length)" width="90" x="581" y="34">
+            <parameter key="min_chars" value="10"/>
+            <parameter key="max_chars" value="10000"/>
+          </operator>
+          <operator activated="false" class="text:filter_tokens_by_pos" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (by POS Tags)" width="90" x="715" y="136">
+            <parameter key="language" value="English"/>
+            <parameter key="expression" value="N.* "/>
+            <parameter key="invert_filter" value="false"/>
+          </operator>
+          <connect from_port="document" to_op="Extract Content (2)" to_port="document"/>
+          <connect from_op="Extract Content (2)" from_port="document" to_op="Multiply (2)" to_port="input"/>
+          <connect from_op="Multiply (2)" from_port="output 1" to_op="Filter Tokens (3)" to_port="document"/>
+          <connect from_op="Filter Tokens (3)" from_port="document" to_op="Filter Tokens (4)" to_port="document"/>
+          <connect from_op="Filter Tokens (4)" from_port="document" to_op="Filter Tokens (by Length)" to_port="document"/>
+          <connect from_op="Filter Tokens (by Length)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="text:wordlist_to_data" compatibility="7.0.000" expanded="true" height="82" name="WordList to Data" width="90" x="782" y="340"/>
+      <operator activated="true" class="write_csv" compatibility="7.0.001" expanded="true" height="82" name="Write CSV (3)" width="90" x="916" y="340">
+        <parameter key="csv_file" value="G:\Data Science\M.Sc. Data Science\Dropbox\Projekte\Projekt Cookbook\nytimes_wordlist.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
+      </operator>
+      <operator activated="true" class="text:data_to_documents" compatibility="7.0.000" expanded="true" height="68" name="Data to Documents" width="90" x="380" y="187">
+        <parameter key="select_attributes_and_weights" value="false"/>
+        <list key="specify_weights"/>
+      </operator>
+      <operator activated="true" class="text:process_documents" compatibility="7.0.000" expanded="true" height="103" name="Process Documents" width="90" x="514" y="187">
+        <parameter key="create_word_vector" value="true"/>
+        <parameter key="vector_creation" value="TF-IDF"/>
+        <parameter key="add_meta_information" value="true"/>
+        <parameter key="keep_text" value="true"/>
+        <parameter key="prune_method" value="by ranking"/>
+        <parameter key="prune_below_percent" value="3.0"/>
+        <parameter key="prune_above_percent" value="30.0"/>
+        <parameter key="prune_below_rank" value="0.05"/>
+        <parameter key="prune_above_rank" value="0.95"/>
+        <parameter key="datamanagement" value="double_sparse_array"/>
+        <process expanded="true">
+          <operator activated="true" class="web:extract_html_text_content" compatibility="7.0.000" expanded="true" height="68" name="Extract Content" width="90" x="45" y="34">
+            <parameter key="extract_content" value="true"/>
+            <parameter key="minimum_text_block_length" value="1"/>
+            <parameter key="override_content_type_information" value="true"/>
+            <parameter key="neglegt_span_tags" value="true"/>
+            <parameter key="neglect_p_tags" value="true"/>
+            <parameter key="neglect_b_tags" value="true"/>
+            <parameter key="neglect_i_tags" value="true"/>
+            <parameter key="neglect_br_tags" value="true"/>
+            <parameter key="ignore_non_html_tags" value="true"/>
+          </operator>
+          <operator activated="true" class="multiply" compatibility="7.0.001" expanded="true" height="82" name="Multiply" width="90" x="179" y="34"/>
+          <operator activated="true" class="text:filter_tokens_by_regions" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (by Region)" width="90" x="313" y="34">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="Ingredients"/>
+            <parameter key="case_sensitive" value="true"/>
+            <parameter key="invert condition" value="false"/>
+            <parameter key="tokens_before" value="0"/>
+            <parameter key="tokens_after" value="25"/>
+          </operator>
+          <operator activated="true" class="text:filter_tokens_by_regions" compatibility="7.0.000" expanded="true" height="68" name="Filter Tokens (2)" width="90" x="447" y="34">
+            <parameter key="condition" value="contains"/>
+            <parameter key="string" value="Method"/>
+            <parameter key="case_sensitive" value="false"/>
+            <parameter key="invert condition" value="false"/>
+            <parameter key="tokens_before" value="25"/>
+            <parameter key="tokens_after" value="0"/>
+          </operator>
+          <connect from_port="document" to_op="Extract Content" to_port="document"/>
+          <connect from_op="Extract Content" from_port="document" to_op="Multiply" to_port="input"/>
+          <connect from_op="Multiply" from_port="output 1" to_op="Filter Tokens (by Region)" to_port="document"/>
+          <connect from_op="Filter Tokens (by Region)" from_port="document" to_op="Filter Tokens (2)" to_port="document"/>
+          <connect from_op="Filter Tokens (2)" from_port="document" to_port="document 1"/>
+          <portSpacing port="source_document" spacing="0"/>
+          <portSpacing port="sink_document 1" spacing="0"/>
+          <portSpacing port="sink_document 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="text:wordlist_to_data" compatibility="7.0.000" expanded="true" height="82" name="WordList to Data (2)" width="90" x="782" y="187"/>
+      <operator activated="true" class="write_csv" compatibility="7.0.001" expanded="true" height="82" name="Write CSV (4)" width="90" x="906" y="187">
+        <parameter key="csv_file" value="G:\Data Science\M.Sc. Data Science\Dropbox\Projekte\Projekt Cookbook\dinersjournal_wordlist.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
+      </operator>
+      <operator activated="true" class="write_csv" compatibility="7.0.001" expanded="true" height="82" name="Write CSV" width="90" x="648" y="238">
+        <parameter key="csv_file" value="G:\Data Science\M.Sc. Data Science\Dropbox\Projekte\Projekt Cookbook\dinersjournal.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
+      </operator>
+      <operator activated="true" class="write_csv" compatibility="7.0.001" expanded="true" height="82" name="Write CSV (2)" width="90" x="648" y="340">
+        <parameter key="csv_file" value="G:\Data Science\M.Sc. Data Science\Dropbox\Projekte\Projekt Cookbook\nytimes.csv"/>
+        <parameter key="column_separator" value=";"/>
+        <parameter key="write_attribute_names" value="true"/>
+        <parameter key="quote_nominal_values" value="true"/>
+        <parameter key="format_date_attributes" value="true"/>
+        <parameter key="append_to_file" value="false"/>
+        <parameter key="encoding" value="SYSTEM"/>
+      </operator>
+      <connect from_op="Get Pages" from_port="Example Set" to_op="Store" to_port="input"/>
+      <connect from_op="Retrieve" from_port="output" to_op="Filter Examples" to_port="example set input"/>
+      <connect from_op="Filter Examples" from_port="example set output" to_op="Data to Documents" to_port="example set"/>
+      <connect from_op="Filter Examples" from_port="unmatched example set" to_op="Data to Documents (2)" to_port="example set"/>
+      <connect from_op="Data to Documents (2)" from_port="documents" to_op="Process Documents (2)" to_port="documents 1"/>
+      <connect from_op="Process Documents (2)" from_port="example set" to_op="Write CSV (2)" to_port="input"/>
+      <connect from_op="Process Documents (2)" from_port="word list" to_op="WordList to Data" to_port="word list"/>
+      <connect from_op="WordList to Data" from_port="example set" to_op="Write CSV (3)" to_port="input"/>
+      <connect from_op="Data to Documents" from_port="documents" to_op="Process Documents" to_port="documents 1"/>
+      <connect from_op="Process Documents" from_port="example set" to_op="Write CSV" to_port="input"/>
+      <connect from_op="Process Documents" from_port="word list" to_op="WordList to Data (2)" to_port="word list"/>
+      <connect from_op="WordList to Data (2)" from_port="example set" to_op="Write CSV (4)" to_port="input"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <description align="center" color="red" colored="true" height="132" resized="true" width="690" x="22" y="50">Loading Source code from data</description>
+    </process>
+  </operator>
+</process>
